@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="IBM position - Assessment Task">
+		<meta name="author" content="Bencs Balázs">
+		
+		<title>Facebook Posts list</title>
+		
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		
+	</head>
+	<body>
+		<header>
+			<div class="row">
+				<div class="container">
+					<h2 class="pull-left">IBM assessment task - Facebook Posts</h2>
+					<div class="pull-right" id="status">Not logged in</div>
+				</div>
+			</div>
+		</header>
+		<main>
+			<div class="row">
+				<div class="container result">
+				
+				</div>
+			</div>
+		</main>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script>
+		var x = document.cookie;
+		if (x) {
+			// Get user data when login is on.
+			$.getJSON("user.php", function(response){
+				$("#status").html('Logged in as ' + response.name + '! <img src="'+ response.picture.data.url +'">');
+			});
+			
+			
+			// Get posts
+			$.getJSON("server.php", function(response){
+				var posts = response.data;
+				$(posts).each(function(){
+					message = (this.message) ? this.message : "";
+					story = (this.story) ? this.story : "";
+					// Add each post to html page.
+					$("<div/>",{
+						class: "panel",
+						html: "<div>"+message+"</div>"+"<div>"+story+"</div><div>"+this.created_time+"</div>"
+					}).appendTo(".result");
+				});
+			});
+		} else {
+			// If not logged in, show the login button and trigger the onclick event.
+			$("<button/>",{
+				class: "btn btn-info",
+				"id" : "login",
+				text: "Login to facebook"
+			}).appendTo(".result");
+			
+			$(document).on("click", "#login", function(){
+				location.href="login.php";
+			});
+		}
+	</script>
+	</script>	
+	</body>
+</html>
