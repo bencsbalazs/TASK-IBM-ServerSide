@@ -2,7 +2,7 @@
 
 // Init Facebook app data
 $clientid = "540802199590930";
-$redirecturi = "http://onlinestudium.hu/~balays/facebook/login.php";
+$redirecturi = "https://facebook-connect.eu-gb.mybluemix.net/login.php";
 $state = md5(time());
 $appsecret = "20e9ddf88a9511a6e69f9241a4d95438";
 
