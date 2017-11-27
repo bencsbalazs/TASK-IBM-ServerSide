@@ -31,13 +31,14 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script>
-		var x = document.cookie;
-		if (x) {
 			// Get user data when login is on.
 			$.getJSON("user.php", function(response){
 				$("#status").html('Logged in as ' + response.name + '! <img src="'+ response.picture.data.url +'">');
 			});
-			
+			// Login
+			$.post( "button.php", function( data ) {
+				$( ".result" ).append( data );
+			});
 			
 			// Get posts
 			$.getJSON("server.php", function(response){
@@ -52,19 +53,10 @@
 					}).appendTo(".result");
 				});
 			});
-		} else {
 			// If not logged in, show the login button and trigger the onclick event.
-			$("<button/>",{
-				class: "btn btn-info",
-				"id" : "login",
-				text: "Login to facebook"
-			}).appendTo(".result");
-			
 			$(document).on("click", "#login", function(){
 				location.href="login.php";
 			});
-		}
-	</script>
 	</script>	
 	</body>
 </html>
