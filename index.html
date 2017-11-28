@@ -20,6 +20,16 @@
 				</div>
 			</div>
 		</header>
+		<aside class="row">
+			<div class="container">
+				<div class="col-xs-12 col-md-6 login text-center">
+				
+				</div>
+				<div class="col-xs-12 col-md-6 text-center">
+					<span>Utolsó <i id="wn">1</i> hét.</span><input id="weeknumber" type="range" min="1" max="5" step="1" value="1">
+				</div>
+			</div>
+		</aside>
 		<main>
 			<div class="row">
 				<div class="container result">
@@ -31,31 +41,60 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script>
+		s = 1;
 			// Get user data when login is on.
 			$.getJSON("user.php", function(response){
 				$("#status").html('Logged in as ' + response.name + '! <img src="'+ response.picture.data.url +'">');
 			});
 			// Login
 			$.post( "button.php", function( data ) {
-				$( ".result" ).append( data );
+				$( ".login" ).append( data );
 			});
 			
-			// Get posts
-			$.getJSON("server.php", function(response){
-				var posts = response.data;
-				$(posts).each(function(){
-					message = (this.message) ? this.message : "";
-					story = (this.story) ? this.story : "";
-					// Add each post to html page.
-					$("<div/>",{
-						class: "panel",
-						html: "<div>"+message+"</div>"+"<div>"+story+"</div><div>"+this.created_time+"</div>"
-					}).appendTo(".result");
-				});
+			$(document).on("change", "#weeknumber", function(){
+				$("#wn").text(this.value);
+				Display(this.value);
 			});
+			
+			$(document).ready(function(){
+				Display(1);
+			});
+			
+			
+			
+			// Get posts
+			function Display(weeks){
+				$(".result").empty();
+				var s = weeks;
+				// One week is 604800 seconds.
+				var week = 604800;
+				var now = new Date();
+				var duration = (now.getTime() / 1000) - (s * week);
+			console.log(duration);
+				$.getJSON("server.php", function(response){
+					var posts = response.data;
+					$(posts).each(function(){
+						message = (this.message) ? this.message : "";
+						story = (this.story) ? this.story : "";
+						date = new Date(this.created_time);
+						seconds = date.getTime() / 1000;
+						// Add each post to html page that match for the criteria.
+						if (seconds > duration) {
+							$("<div/>",{
+								class: "panel",
+								html: "<div>"+message+"</div>"+"<div>"+story+"</div><div>"+seconds+"</div>"
+							}).appendTo(".result");
+						}
+					});
+				});
+			}
+			
 			// If not logged in, show the login button and trigger the onclick event.
 			$(document).on("click", "#login", function(){
 				location.href="login.php";
+			});
+			$(document).on("click", "#logout", function(){
+				location.href="logout.php";
 			});
 	</script>	
 	</body>
